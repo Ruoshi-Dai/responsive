@@ -15,38 +15,38 @@ Here are the tools we used and their versions:
 ## 2. Results
 We use the screenshots to show the results here. First is the whole page preview:
 
-![avatar](/responsive/screenshots/preview.png)
+![Preview](https://github.com/Ruoshi-Dai/responsive/blob/main/screenshots/preview.png)
 
 ### (1) Responsive
 
-Firstly, the sizes of all the text on this page (including text in the elements like buttons, checkboxes and so on) are changing according to the screen size.
+Firstly, the sizes of all the text on this page (including text in the elements like buttons, checkboxes and so on) are changing according to the screen size. The sizes of different elements also change according to the window size. They will change smoothly when we resize the window by hand.
 
 Then we will see how this page looks like under different dimensions as follows:
 
 #### iPhone 12 Pro
-![avatar](/responsive/screenshots/iphone12pro.png)
+![iphone12pro](https://github.com/Ruoshi-Dai/responsive/blob/main/screenshots/iphone12pro.png)
 
 #### iPad Mini
-![avatar](/responsive/screenshots/ipadmini.png)
+![ipadmini](https://github.com/Ruoshi-Dai/responsive/blob/main/screenshots/ipadmini.png)
 
 #### Nest Hub
-![avatar](/responsive/screenshots/NestHub.png)
+![NestHub](https://github.com/Ruoshi-Dai/responsive/blob/main/screenshots/NestHub.png)
 
 ### (2) Cube ui
 
 Here's a simple explanation of how I used this ui library.
 
 For the button, if we click it, the text on the right side is hidden and the text on the button changes to "Show".
-![avatar](/responsive/screenshots/button1.png)
+![button1](https://github.com/Ruoshi-Dai/responsive/blob/main/screenshots/button1.png)
 Then if we click it again, the text shows up.
-![avatar](/responsive/screenshots/button2.png)
+![button2](https://github.com/Ruoshi-Dai/responsive/blob/main/screenshots/button2.png)
 
 I didn't manage a lot about the action of checkboxes.
 
 For the textarea, what we type in the area will show up on the right:
-![avatar](/responsive/screenshots/textarea1.png)
+![textarea1](https://github.com/Ruoshi-Dai/responsive/blob/main/screenshots/textarea1.png)
 These sentances' font size will also change according to the screen size:
-![avatar](/responsive/screenshots/textarea2.png)
+![textarea2](https://github.com/Ruoshi-Dai/responsive/blob/main/screenshots/textarea2.png)
 
 ## 3. How to make the website responsive
 
