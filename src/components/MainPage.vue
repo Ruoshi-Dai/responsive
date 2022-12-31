@@ -1,24 +1,28 @@
 <template>
-  <div class="wrapper">
-    <cube-button
-    id = "button1"
-    value = "true"
-    class="c-button"
-    :style="{
-      height: minWH/5 + 'px',
-      width: minWH/5 + 'px',
-      fontSize: minWH/25 + 'px'
-      }"
-    :inline="true"
-    @click="hide">
-      {{ buttonMsg }}
-    </cube-button>
-    <span
-      id="text1"
-      class="txt"
-      :style="{fontSize: minWH/35 + 'px'}">
-      左方按钮的边长为频幕短边长度的五分之一。
-    </span>
+  <div>
+    <div class="wrapper">
+      <cube-button
+      id = "button1"
+      class="c-button"
+      :style="{
+        height: minWH/5 + 'px',
+        width: minWH/5 + 'px',
+        fontSize: minWH/25 + 'px'
+        }"
+      :inline="true"
+      @click="hide">
+        {{ buttonMsg }}
+      </cube-button>
+      <span
+        id="text1"
+        class="txt"
+        :style="{fontSize: minWH/35 + 'px'}">
+        The sides of the left button is 1/5 of the shorter side of the screen.
+      </span>
+    </div>
+    <div>
+      <cube-switch v-model="Switch">Switch</cube-switch>
+    </div>
   </div>
 </template>
 
@@ -30,19 +34,19 @@ export default {
       minWH: Math.min(window.innerHeight, window.innerWidth),
       msg: 'Hello World',
       buttonMsg: 'Hide',
-      value: ''
+      value: '',
+      Switch: true
     }
   },
   methods: {
     hide: function (event) {
-      var hideBtn = document.getElementById('button1')
       var text1 = document.getElementById('text1')
-      if (hideBtn.value === 'true') {
+      if (this.buttonMsg === 'Hide') {
         text1.className = 'hide'
-        hideBtn.value = 'false'
+        this.buttonMsg = 'Show'
       } else {
         text1.className = 'show'
-        hideBtn.value = 'true'
+        this.buttonMsg = 'Hide'
       }
     }
   },
@@ -91,5 +95,10 @@ export default {
 
 .show {
   visibility: visible;
+}
+
+cube-switch {
+  border-style: solid;
+  background-color: aqua;
 }
 </style>
