@@ -15,7 +15,6 @@
         width: minWH/5 + 'px',
         fontSize: minWH/25 + 'px',
         }"
-      :inline="true"
       @click="hide">
         {{ buttonMsg }}
       </cube-button>
@@ -69,14 +68,14 @@
         v-model="txt1"
         :style="{
           width: screenWidth/3 + 'px',
-          height: 3*screenWidth/70 + 'px',
+          height: screenWidth/15 + 'px',
           fontSize: screenWidth/70 + 'px',
         }"></cube-textarea>
       <span
         class="textBox"
         :style="{
           width: screenWidth/3 -20 + 'px',
-          height: 3*screenWidth/70 -20 + 'px',
+          height: screenWidth/15 - 20 + 'px',
           fontSize: screenWidth/70 + 'px',
         }">
         {{ txt1 }}
@@ -163,6 +162,7 @@ h1 {
 
 .wrapper {
   margin-top: 2%;
+  display: flex;
 }
 
 .c-button {
@@ -171,10 +171,13 @@ h1 {
   padding-right: 5px;
   padding-top: 6px;
   padding-bottom: 6px;
+  margin-left: 6%;
+  margin-right: 5%;
 }
 
 .txt{
-  line-height: 10%;
+  text-align: left;
+  padding-top: 5%;
 }
 
 .hide {
