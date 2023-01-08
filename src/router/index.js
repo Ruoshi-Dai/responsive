@@ -5,11 +5,17 @@ import Router from 'vue-router'
 import PicViewer from '@/components/PicViewer'
 // import Test from '@/components/Test'
 import previews from '@/components/previews'
+import PicBook from '@/components/PicBook'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/',
+      name: 'PicBook',
+      component: PicBook
+    },
     {
       path: '/',
       name: 'previews',
