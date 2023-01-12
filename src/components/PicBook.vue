@@ -1,46 +1,30 @@
 <template>
   <div id="box">
-    <ul class="pages"
-        :style="{width: screenWidth + 'px', height: screenHeight * 0.8 + 'px'}">
-      <li class="paper" data-left
-          :style="{width: screenWidth * 0.5 + 'px', height: screenHeight * 0.8 + 'px'}"
-          @click="gotoPrevieous">
-        <div class="page page-1-back" id="p1b">
-          <img :src="getImgsrc(0)" alt :style="{width: screenWidth * 0.5 + 'px', maxHeight: screenHeight * 0.8 + 'px'}">
+    <div class="pages" :style="{width: screenWidth * 0.8 + 'px', height: this.screenWidth / 6 * 4 + 'px', left: screenWidth * 0.1 + 'px'}">
+      <div class="prepaper" :style="pageStyle">
+        <img :src="getImgsrc(0)" alt :style="imgStyle">
+      </div>
+      <div class="paper" data-left :style="pageStyle" @click="gotoPrevieous">
+        <div class="page page-1-back" :style="pageStyle">
+          <img :src="getImgsrc(1)" alt :style="imgStyle">
         </div>
-        <div class="page page-1" id="p1">
-          <img :src="getImgsrc(1)" alt :style="{width: screenWidth * 0.5 + 'px', maxHeight: screenHeight * 0.8 + 'px'}">
+        <div class="page page-1" :style="pageStyle">
+          <img :src="getImgsrc(2)" alt :style="imgStyle">
         </div>
-      </li>
-      <li class="paper" data-right
-          :style="{width: screenWidth * 0.5 + 'px', height:screenHeight * 0.8 + 'px'}"
-          @click="gotoNext">
-        <div class="page page-2" id="p2">
-          <img :src="getImgsrc(2)" alt :style="{width: screenWidth * 0.5 + 'px', maxHeight: screenHeight * 0.8 + 'px'}">
+      </div>
+      <div class="paper" data-right :style="pageStyle" @click="gotoNext">
+        <div class="page page-2" :style="pageStyle">
+          <img :src="getImgsrc(3)" alt :style="imgStyle">
         </div>
-        <div class="page page-2-back" id="p2b">
-          <img :src="getImgsrc(3)" alt :style="{width: screenWidth * 0.5 + 'px', maxHeight: screenHeight * 0.8 + 'px'}">
+        <div class="page page-2-back" :style="pageStyle">
+          <img :src="getImgsrc(4)" alt :style="imgStyle">
         </div>
-      </li>
-    </ul>
+      </div>
+      <div class="nxtpaper" :style="pageStyle">
+        <img :src="getImgsrc(5)" alt :style="imgStyle">
+      </div>
+    </div>
   </div>
-  <!-- <div id="box">
-    <ul class="pages" :style="{width: screenWidth + 'px', height:screenHeight * 0.8 + 'px'}">
-      <li class="paper" data-left
-          :style="{width: screenWidth * 0.5 + 'px', height:screenHeight * 0.8 + 'px'}"
-          @click="gotoPrevieous">
-        <div class="page page-1-back"></div>
-        <div class="page page-1"></div>
-      </li>
-      <li class="paper" data-right
-          :style="{width: screenWidth * 0.5 + 'px', height:screenHeight * 0.8 + 'px'}"
-          @click="gotoNext">
-          <div class="page page-2"></div>
-          <div class="page page-2-back"></div>
-      </li>
-    </ul>
-    <div class="test"></div>
-  </div> -->
 </template>
 
 <script>
@@ -85,10 +69,6 @@ export default {
       boxObj: '',
       leftpageObj: '',
       rightpageObj: '',
-      p1bObj: '',
-      p1Obj: '',
-      p2Obj: '',
-      p2bObj: '',
       index: 0
     }
   },
@@ -96,10 +76,7 @@ export default {
     gotoPrevieous () {
       if (this.ready === false) return
       this.ready = false
-      this.p1Obj.style.zIndex = 4
-      this.p1bObj.style.zIndex = 3
-      console.log('p1b zindex: ' + this.p1Obj.style.zIndex)
-      console.log('p2 zindex: ' + this.p2Obj.style.zIndex)
+      this.leftpageObj.style.zIndex = 4
       this.leftpageObj.style.WebkitTransform = 'perspective(1000px) rotateY(180deg)'
       this.leftpageObj.style.transformOrigin = 'right center'
       this.leftpageObj.style.transition = '2s ease-in-out'
@@ -108,8 +85,7 @@ export default {
         this.leftpageObj.style.transition = 'none'
         this.leftpageObj.style.WebkitTransform = 'perspective(1000px) rotateY(0deg)'
         this.index = newIndex
-        // this.p1bObj.style.zIndex = 1
-        // this.p1Obj.style.zIndex = 2
+        this.leftpageObj.style.zIndex = 3
         this.ready = true
         console.log('index: ' + this.index)
       }, false)
@@ -117,8 +93,7 @@ export default {
     gotoNext () {
       if (this.ready === false) return
       this.ready = false
-      this.p2Obj.style.zIndex = 4
-      this.p2bObj.style.zIndex = 3
+      this.rightpageObj.style.zIndex = 4
       this.rightpageObj.style.WebkitTransform = 'perspective(1000px) rotateY(-180deg)'
       this.rightpageObj.style.transformOrigin = 'left center'
       this.rightpageObj.style.transition = '2s ease-in-out'
@@ -127,8 +102,7 @@ export default {
         this.rightpageObj.style.transition = 'none'
         this.rightpageObj.style.WebkitTransform = 'perspective(1000px) rotateY(0deg)'
         this.index = newIndex
-        this.p2bObj.style.zIndex = 1
-        this.p2Obj.style.zIndex = 2
+        this.rightpageObj.style.zIndex = 3
         this.ready = true
         console.log('index: ' + this.index)
       }, false)
@@ -137,8 +111,19 @@ export default {
   computed: {
     getImgsrc () {
       return function (ind) {
-        // console.log('index: ' + this.index + ' length: ' + this.items.length)
         return this.items[(this.index + ind) % this.items.length].image
+      }
+    },
+    imgStyle: function () {
+      return {
+        width: this.screenWidth * 0.4 + 'px',
+        maxHeight: '100%'
+      }
+    },
+    pageStyle: function () {
+      return {
+        width: this.screenWidth * 0.4 + 'px',
+        height: this.screenWidth * 0.4 / 3 * 4 + 'px'
       }
     }
   },
@@ -147,14 +132,6 @@ export default {
     this.boxObj = document.getElementById('box')
     this.leftpageObj = document.querySelector('.paper[data-left]')
     this.rightpageObj = document.querySelector('.paper[data-right]')
-    this.p1bObj = document.getElementById('p1b')
-    this.p1Obj = document.getElementById('p1')
-    this.p2Obj = document.getElementById('p2')
-    this.p2bObj = document.getElementById('p2b')
-    this.p1bObj.style.zIndex = 1
-    this.p1Obj.style.zIndex = 2
-    this.p2Obj.style.zIndex = 2
-    this.p2bObj.style.zIndex = 1
     window.onresize = () => {
       return (() => {
         window.screenWidth = window.innerWidth
@@ -181,45 +158,31 @@ export default {
 </script>
 
 <style scoped>
-@keyframes flip-to-left {
-  from {
-    transform: perspective(1000px) rotateY(0);
-  }
-  to {
-    transform: perspective(1000px) rotateY(-180deg);
-  }
+.box {
+  text-align: center;
 }
 
-@keyframes flip-to-right {
-  from {
-    transform: perspective(1000px) rotateY(0);
-  }
-  to {
-    transform: perspective(1000px) rotateY(180deg);
-  }
+.pages {
+  z-index: auto;
+  position:absolute;
+  display: inline-block;
 }
-
-/* .paper[data-right] {
-  transform-origin: left center;
-  animation: flip-to-left 2s ease-in-out;
-} */
-
-/* .paper[data-left] {
-  transform-origin: right center;
-  animation: flip-to-right 2s ease-in-out;
-} */
 
 .paper {
   /* display: none; */
   position: absolute;
   right: 0;
   transform-style: preserve-3d;
-  z-index: auto;
+}
+
+.page {
+  background-color: white;
 }
 
 .paper[data-left],
 .paper[data-right] {
   display: block;
+  z-index: 3;
 }
 
 .paper[data-left] {
@@ -240,9 +203,19 @@ export default {
   right: 0;
 }
 
-/* .paper[data-right] + .paper {
-  display: block;
-} */
+.prepaper {
+  position: absolute;
+  right: auto;
+  left: 0;
+  z-index: 0;
+}
+
+.nxtpaper {
+  position: absolute;
+  left: auto;
+  right: 0;
+  z-index: 0;
+}
 
 .page {
   position: absolute;
@@ -251,7 +224,7 @@ export default {
 }
 
 .page-1-back, .page-2-back {
-  z-index: 1;
+  z-index: 2;
 }
 
 .page-1-back img {
@@ -265,5 +238,9 @@ export default {
 .page-1, .page-2 {
   z-index: 2;
   transform: translateZ(1px);
+}
+
+.page-pre, .page-nxt {
+  z-index: 1;
 }
 </style>
