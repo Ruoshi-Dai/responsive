@@ -4,9 +4,9 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 // import './cube-ui'
-import Cube from 'cube-ui'
+// import Cube from 'cube-ui'
 
-Vue.use(Cube)
+// Vue.use(Cube)
 
 Vue.config.productionTip = false
 
