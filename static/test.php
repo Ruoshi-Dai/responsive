@@ -1,0 +1,1 @@
+.wrapper {color: rgb(255, 0, 0);}

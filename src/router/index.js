@@ -6,7 +6,7 @@ import Router from 'vue-router'
 // import Test from '@/components/Test'
 // import previews from '@/components/previews'
 // import PicBook from '@/components/PicBook'
-import Curling from '@/components/Curling'
+import CurlingV2 from '@/components/CurlingV2'
 
 Vue.use(Router)
 
@@ -14,8 +14,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Curling',
-      component: Curling
+      name: 'CurlingV2',
+      component: CurlingV2
     }
     // {
     //   path: '/',
