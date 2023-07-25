@@ -31,34 +31,47 @@
 
 <script>
 export default {
+  // variables declaration
   data () {
     return {
+      // file name
       name: 'CurlingV2',
+      // used to compose html files' names
       nameList: [
         'Cat', 'American Shorthair', 'British Shorthair', 'Chartreux', 'Ragdoll', 'Siamese cat', 'Persian cat', 'Russian Blue'
       ],
+      // used to compose html files' names
       urlPrefix: '../../static/',
+      // used to compose html files' paths
       urlSuffix: ' - Wikipedia.html',
+      // plain html codes to be inserted
       htmlCode: [],
+      // screen width
       screenWidth: window.innerWidth,
+      // screen height
       screenHeight: window.innerHeight,
-      ready: true,
+      // degree calculated when turning the page
       rightdeg: 0,
+      // flag for whether start the turning process
       moveEventFlag: false,
-      rightOrigin: 0,
+      // variables used for calculating the position when turning pages
       transX: 0,
       transY: 0,
       wrapX: 0,
+      // variables used for memory wrappers and pages components when turning pages
       page1: '',
       page2: '',
       wrap1: '',
       wrap2: '',
       corner: '',
+      // page index
       ind: 0,
+      // flag for whether the device is a mobile device
       isMobile: navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
     }
   },
   computed: {
+    // functions for responsive style setting
     rightPageStl: function () {
       if (this.isMobile) {
         return {
@@ -131,36 +144,13 @@ export default {
         transform: 'translate(' + dx + 'px, ' + this.transY + 'px) rotate(' + deg + 'deg)',
         transformOrigin: '100% 100%'
       }
-    }// ,
-    // mySrc1: {
-    //   get: function () {
-    //     return this.baseURL + this.nameList[this.ind]
-    //   }
-    // },
-    // mySrc2: {
-    //   get: function () {
-    //     if (this.isMobile) {
-    //       return this.baseURL + this.nameList[this.ind]
-    //     } else {
-    //       return this.baseURL + this.nameList[(this.ind + 1) % this.nameList.length]
-    //     }
-    //   }
-    // },
-    // mySrc3: {
-    //   get: function () {
-    //     return this.baseURL + this.nameList[(this.ind + 2) % this.nameList.length]
-    //   }
-    // },
-    // mySrc4: {
-    //   get: function () {
-    //     return this.baseURL + this.nameList[(this.isMobile ? this.ind + 1 : this.ind + 3) % this.nameList.length]
-    //   }
-    // }
+    }
   },
   created () {
     this.readHtmlFiles()
   },
   methods: {
+    // load html files to variable htmlCode
     readHtmlFiles () {
       for (let i = 0; i < this.nameList.length; ++i) {
         const filename = this.urlPrefix + this.nameList[i] + (this.isMobile ? ' - mobile' : '') + this.urlSuffix
@@ -178,10 +168,9 @@ export default {
       return xhr.status === okStatus ? xhr.responseText : null
     },
     modifystring (data) {
-      // console.log(this.testdata)
+      // only for wiki pages, don't include this function if use other html files
       const stylepattern = /<link rel="stylesheet".*?>/g
       const matches = data.match(stylepattern)
-      // console.log(matches)
       const hrefpattern = /href=".*?"/
       var styledata = data
       for (let i = 0; i < matches.length; ++i) {
@@ -195,17 +184,14 @@ export default {
       var imgdata = styledata
       for (let i = 0; i < imgmatches.length; ++i) {
         const originulr = imgmatches[i]
-        // console.log('here' + originulr)
         const srcmatch = originulr.match(/src="./)
         const newurl = originulr.replace(srcmatch, 'src="../../static')
-        // console.log('here ' + newurl + ' end')
         imgdata = imgdata.replace(imgmatches[i], newurl)
       }
-      // console.log(imgdata)
       return imgdata
     },
     computeDeg (that, x0, y0) {
-      // TODO: what if x0 = x1 or y0 = y1
+      // compute the degrees when turning pages
       var x1 = that.screenWidth * 0.9
       var y1 = that.screenHeight * 0.9
       if (x0 === x1) x0 = x1 - 1
@@ -213,18 +199,17 @@ export default {
       var y = (x0 - x1) / (y1 - y0) * ((x1 - x0) / 2) + (y0 + y1) / 2
       var x = Math.sqrt(((x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1))) / 2
       var alpha = Math.asin(x / (y1 - y))
-      // var x2 = x1 - (y1 - y) * Math.sin(alpha)
-      // var y2 = y + (y1 - y) * Math.cos(alpha)
-      that.rightOrigin = y - that.screenHeight * 0.1
       that.transX = 0 - x
       that.transY = 0 - x * Math.tan(alpha)
       that.wrapX = 0 - (y1 - y) * Math.tan(alpha)
       that.rightdeg = alpha / Math.PI * 180
-      // console.log((x2 - x1) * (x2 - x1) + (y2 - y) * (y2 - y), (y1 - y) * (y1 - y), y2, (x0 - x1) / (y1 - y0) * x2 + (y0 + y1) / 2 - (x0 * x0 - x1 * x1) / (2 * (y1 - y0)))
     },
     turningAnimationPhase1 (that) {
+      // The first phase of the turning process after the mouse up
+      // Start from the mouse up position, move along the direction from right lowest corner to the mouse up position
+      // Stop when the lower right corner of the turn-page is at the lower left corner of the right page
       if (that.moveEventFlag === true) {
-        // console.log('x: ' + e.x + ' y: ' + e.y)
+        // Set variables according to the mouse-up position
         var alpha = that.rightdeg * Math.PI / 180
         var newtransX1 = 0 - that.screenWidth * (that.isMobile ? 0.8 : 0.4) * Math.cos(alpha)
         var newtransY1 = 0 - that.screenWidth * (that.isMobile ? 0.8 : 0.4) * Math.sin(alpha)
@@ -232,6 +217,7 @@ export default {
         var old2deg = 0 - that.rightdeg
         var new2x1 = 0 - newtransX1
         var newWrapX = 0 - that.screenWidth * (that.isMobile ? 0.8 : 0.4)
+        // apply the variables to the styles of those components
         const page1Move = [
           {transform: 'translate(' + that.transX + 'px, ' + that.transY + 'px) rotate(' + that.rightdeg + 'deg)'},
           {transform: 'translate(' + newtransX1 + 'px, ' + newtransY1 + 'px) rotate(' + that.rightdeg + 'deg)'}
@@ -248,6 +234,7 @@ export default {
           {transform: 'translateX(' + that.wrapX + 'px) rotate(' + that.rightdeg + 'deg)'},
           {transform: 'translateX(' + newWrapX + 'px) rotate(' + that.rightdeg + 'deg)'}
         ]
+        // set the animations and active them
         const duration1 = {duration: 1000}
         that.page1.animate(page1Move, duration1)
         that.page2.animate(page2Move, duration1)
@@ -256,14 +243,18 @@ export default {
       }
     },
     turningAnimationPhase2 (that) {
+      // the second phase of the turning pages after mouse up
+      // In this phase wrapper and turn-page are only doing the rotation
       if (that.moveEventFlag === true) {
+        // set the flag to end to indicate the turning ends
+        // Set the values of animation variables according to turn-page position
         that.moveEventFlag = false
         var old2deg = 0 - that.rightdeg
         var newWrapX = 0 - that.screenWidth * (that.isMobile ? 0.8 : 0.4)
         var newtransX2 = 0 - that.screenWidth * (that.isMobile ? 0.8 : 0.4)
         var newtransY2 = 0
         var new2x2 = 0 - newtransX2
-        console.log('rightdegree: ' + that.rightdeg)
+        // set those values to the styles of related components
         const page1Rotate = [
           {transform: 'translate(' + newtransX2 + 'px, ' + newtransY2 + 'px) rotate(' + that.rightdeg + 'deg)', transformOrigin: '100% 100%'},
           {transform: 'translate(' + newtransX2 + 'px, ' + newtransY2 + 'px) rotate(0deg)', transformOrigin: '100% 100%'}
@@ -280,11 +271,13 @@ export default {
           {transform: 'translateX(' + newWrapX + 'px) rotate(' + that.rightdeg + 'deg)'},
           {transform: 'translateX(' + newWrapX + 'px) rotate(0deg)'}
         ]
+        // set the animations and active them
         var duration2 = {duration: 1000, delay: 1000}
         that.page1.animate(page1Rotate, duration2)
         var myanimation = that.page2.animate(page2Rotate, duration2)
         that.wrap1.animate(wrap1Rotate, duration2)
         that.wrap2.animate(wrap2Rotate, duration2)
+        // reset all the components' positions and increase the page index on finish
         myanimation.onfinish = (event) => {
           that.transX = 0
           that.transY = 0
@@ -297,6 +290,7 @@ export default {
       }
     },
     outofRange (that, e) {
+      // only for mobile devices -- check if the touch position is out of the page range
       var x1 = that.screenWidth * 0.9
       var y1 = that.screenHeight * 0.9
       var x0, y0, x
@@ -318,7 +312,7 @@ export default {
       return false
     },
     moveOutSide (e) {
-      console.log('move outside')
+      // only for non mobile devices -- check if the mouse position is out of the page range
       if (this.moveEventFlag) {
         console.log('move outside')
         var x = this.isMobile ? e.touches[0].clientX : e.x
@@ -332,22 +326,24 @@ export default {
     },
     mouseDownHandler (e) {
       if (this.isMobile) return
-      console.log('here mouse down')
       if (!this.page1) {
+        // memory the pages and wrappers before move them
         this.page1 = document.querySelector('.turn-page')
         this.page2 = document.querySelector('.turn-page2')
         this.wrap1 = document.querySelector('.turn-wrapper')
         this.wrap2 = document.querySelector('.turn-wrapper2')
         this.corner = document.querySelector('.corner')
       }
+
+      // move the corner to lower layers
       this.wrap1.style.zIndex = 2
       this.corner.style.zIndex = 0
+
+      // set the components' position and degrees according to current mouse position
       var brX = this.screenWidth * 0.9
       var brY = this.screenHeight * 0.9
-      console.log(e.x, e.y)
       if (e.x <= brX && e.x >= brX - this.screenWidth * 0.1 &&
           e.y <= brY && e.y >= brY - this.screenHeight * 0.1) {
-        console.log(this.isMobile ? 'touch start in corner' : 'mousedown in corner')
         this.moveEventFlag = true
         this.$options.methods.computeDeg(this, e.x, e.y)
       } else {
@@ -355,6 +351,7 @@ export default {
       }
     },
     mouseUpHandler (e) {
+      // call two phases turning functions
       if (this.isMobile) return
       this.$options.methods.turningAnimationPhase1(this)
       this.$options.methods.turningAnimationPhase2(this)
@@ -366,11 +363,12 @@ export default {
           this.$options.methods.turningAnimationPhase2(this)
           return
         }
+        // set the components' position and degrees according to current mouse position
         this.$options.methods.computeDeg(this, e.x, e.y)
       }
     },
     touchStartHandler (e) {
-      console.log('touch start at', e.touches[0].clientX, e.touches[0].clientY)
+      // similar to mouseDownHandler
       if (!this.isMobile) return
       if (!this.page1) {
         this.page1 = document.querySelector('.turn-page')
@@ -396,6 +394,7 @@ export default {
       }
     },
     touchMoveHandler (e) {
+      // similar to mouseMoveHandler
       console.log('touch move')
       if (!this.isMobile) return
       if (this.moveEventFlag) {
@@ -407,12 +406,14 @@ export default {
       }
     },
     touchEndHandler (e) {
-      console.log('touch end')
+      // similar to mouseUpHandler
       if (!this.isMobile) return
       this.$options.methods.turningAnimationPhase1(this)
       this.$options.methods.turningAnimationPhase2(this)
     }
   },
+
+  // Monitor window size in real time
   mounted () {
     const that = this
     window.onresize = () => {
@@ -441,117 +442,77 @@ export default {
       }
     }
   }
+
 }
 </script>
 
-  <style scoped>
-  .wrapper {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    overflow: hidden;
-    z-index: 1;
-  }
-  .page {
-    /* border-style: solid; */
-    /* border-width: 1px; */
-    width: 40%;
-    height: 80%;
-    background-size: 100% 100%;
-    display: inline-block;
-    position: absolute;
-    top: 10%;
-    bottom: auto;
-    z-index: 1;
-    overflow: scroll;
-  }
+<style scoped>
+.wrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  z-index: 1;
+}
 
-  .leftpage {
-    left: 10%;
-    right: auto;
-  }
+.page {
+  width: 40%;
+  height: 80%;
+  background-size: 100% 100%;
+  display: inline-block;
+  position: absolute;
+  top: 10%;
+  bottom: auto;
+  z-index: 1;
+  overflow: scroll;
+}
 
-  .rightpage {
-    left: auto;
-    right: 10%;
-  }
+.leftpage {
+  left: 10%;
+  right: auto;
+}
 
-  .rightback {
-    right: auto;
-    left: 90%;
-  }
+.rightpage {
+  left: auto;
+  right: 10%;
+}
 
-  /* .corner {
-    border-style: none;
-    border-width: 0px;
-    width: 5%;
-    height: 5%;
-    position: absolute;
-  } */
+.turn-wrapper {
+  position: absolute;
+  z-index: 0;
+  overflow: hidden;
+}
 
-  .br{
-    left: auto;
-    right: 10%;
-    top: auto;
-    bottom: 10%;
-  }
+.turn-wrapper2 {
+  position: absolute;
+  z-index: 2;
+  overflow: hidden;
+}
 
-  .turn-wrapper {
-    position: absolute;
-    z-index: 0;
-    /* transform: rotate(30deg); */
-    /* transform-origin: 100% 70%; */
-    border-color: blue;
-    /* background-color: rgba(100, 100, 100, 0.5); */
-    overflow: hidden;
-  }
+.turn-page {
+  position: absolute;
+  background-size: 100% 100%;
+  z-index: 3;
+  overflow: scroll;
+}
 
-  .turn-wrapper2 {
-    position: absolute;
-    z-index: 2;
-    border-color: blue;
-    /* background-color: rgba(238, 151, 151, 0.5); */
-    overflow: hidden;
-  }
+.turn-page2 {
+  position: absolute;
+  overflow: scroll;
+}
 
-  .turn-page {
-    position: absolute;
-    background-size: 100% 100%;
-    /* left: 100%;
-    right: auto;
-    width: 100%;
-    height: 100%; */
-    /* border-style: solid;
-    border-color: red; */
-    z-index: 3;
-    overflow: scroll;
-  }
-
-  .turn-page2 {
-    position: absolute;
-    /* right: 100%;
-    left: auto;
-    width: 100%;
-    height: 100%; */
-    /* border-style: solid; */
-    /* border-color: red; */
-    /* z-index: 3; */
-    overflow: scroll;
-  }
-
-  .corner {
-    position: absolute;
-    width: 10%;
-    height: 10%;
-    right: 10%;
-    left: auto;
-    bottom: 10%;
-    top: auto;
-    z-index: 4;
-    /* background-color: blue; */
-    border-style: none;
-    overflow: scroll;
-  }
-  </style>
+.corner {
+  position: absolute;
+  width: 10%;
+  height: 10%;
+  right: 10%;
+  left: auto;
+  bottom: 10%;
+  top: auto;
+  z-index: 4;
+  border-style: none;
+  overflow: scroll;
+}
+</style>
